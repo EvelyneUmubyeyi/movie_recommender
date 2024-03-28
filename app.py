@@ -6,6 +6,7 @@ from fuzzywuzzy import process
 from scipy.sparse import load_npz
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from tmdbv3api import TMDb, Movie
 
 st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout='wide')
 
@@ -14,16 +15,31 @@ with open('style.css') as f:
 
 tfidf_matrix = load_npz('./tfidf_matrix.npz')
 movies_df = pd.read_csv('./movies.csv')
+tmdb = TMDb()
+tmdb.api_key = '32d454b8da83a34184f709df16125749'
 
-def recommend_similar_movies(movie_title, top_n=10):
+def get_movie_poster_url(movie_id):
+    movie = Movie()
+    try:
+        details = movie.details(movie_id)
+        poster_path = details.poster_path
+        base_url = "https://image.tmdb.org/t/p/w300"
+        poster_url = base_url + poster_path
+        return poster_url
+    except Exception as e:
+        st.error(f"Error: {e}")
+        return None
+
+def recommend_similar_movies(movie_title, top_n=12):
     idx = movies_df.index[movies_df['title'] == movie_title].tolist()[0]
     movie_vector = tfidf_matrix[idx]
     similarity_scores = cosine_similarity(movie_vector, tfidf_matrix)
     similar_movie_indices = np.argsort(similarity_scores[0])[::-1][1:top_n+1]
-    print(f"Because you watched '{movie_title}':")
+    movies_dict = {}
     for idx in similar_movie_indices:
-        print(f"  {movies_df.iloc[idx]['title']}")
-
+        poster_url = get_movie_poster_url(movies_df.iloc[idx]['id'])
+        movies_dict[movies_df.iloc[idx]['title']] = poster_url
+    return  movies_dict
 
 def load_lottie(url):
     r=requests.get(url)
@@ -54,7 +70,22 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 movie_name = st.text_input(label='', placeholder="Enter a movie name")
+if movie_name != '':
+    all_titles = movies_df['title'].tolist()
+    closest_match = process.extractOne(movie_name,all_titles)
+    if closest_match[0]:
+        recommended_movies = recommend_similar_movies(closest_match[0])
+        st.write(f"Because you watched '{closest_match[0]}':")
 
-all_titles = movies_df['title'].tolist()
-closest_match = process.extractOne(movie_name,all_titles)
-recommend_similar_movies(closest_match[0])
+        col1, col2, col3 = st.columns(3)
+
+        for idx, (movie_name, poster_url) in enumerate(recommended_movies.items()):
+            if idx % 3 == 0:
+                container = col1
+            elif idx % 3 == 1:
+                container = col2
+            else:
+                container = col3
+
+            container.image(poster_url, use_column_width=True)
+            container.write(movie_name)
