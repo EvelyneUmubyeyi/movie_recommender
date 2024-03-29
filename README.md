@@ -1,4 +1,7 @@
 # Movie Recommender System
+[Video Demo](https://drive.google.com/file/d/13ZMgwy5vQPj6rEUnAJz9vxdJsDKtpPGm/view?usp=sharing)
+[Google Colab Notebook](https://colab.research.google.com/drive/1O6l_4SltxjwRAPYO1QyQp4_lTfgPpH-h#scrollTo=UAXdtgomAotQ)
+
 ## Description
 
 The Movie Recommender System is a web application that suggests movies to users based on the content of movies they have previously liked or watched. It utilizes a content-based recommendation approach, analyzing the characteristics of movies such as title, genre, and movie overview to recommend similar movies. The system aims to provide similar movie recommendations to users, enhancing their movie-watching experience.

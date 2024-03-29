@@ -13,7 +13,7 @@ st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout='wid
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-tfidf_matrix = load_npz('./tfidf_matrix.npz')
+tfidf_matrix = load_npz('./tfidf_matrix_2.npz')
 movies_df = pd.read_csv('./movies.csv')
 tmdb = TMDb()
 tmdb.api_key = '32d454b8da83a34184f709df16125749'
