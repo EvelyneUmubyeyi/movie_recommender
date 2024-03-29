@@ -7,3 +7,18 @@ div.st-af.st-ah.st-ba.st-ar.st-as.st-ax.st-ay.st-az.st-b0.st-b1.st-b2.st-bb.st-b
   width: 60%;
   margin: auto;
 }
+
+@media screen and (min-width: 1025px) {
+  div.st-ae.st-af.st-ag.st-ah.st-ai.st-aj.st-ak.st-al.st-am {
+     width:50%;
+     margin: auto;
+  }
+}
+
+div.element-container.st-emotion-cache-411xzw.e1f1d6gn4 {
+  display: none;
+}
+
+img{
+  max-height: 500px;
+}

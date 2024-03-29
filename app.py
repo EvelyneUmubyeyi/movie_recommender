@@ -25,10 +25,9 @@ def get_movie_poster_url(movie_id):
         poster_path = details.poster_path
         base_url = "https://image.tmdb.org/t/p/w300"
         poster_url = base_url + poster_path
-        return poster_url
     except Exception as e:
-        st.error(f"Error: {e}")
-        return None
+        poster_url = "https://res.cloudinary.com/dpuyeblqg/image/upload/v1711736581/movie_cover_jnsbcf.webp"
+    return poster_url
 
 def recommend_similar_movies(movie_title, top_n=12):
     idx = movies_df.index[movies_df['title'] == movie_title].tolist()[0]
@@ -65,13 +64,15 @@ else:
 st.markdown("""
     <div style='text-align: center;'>
         <h1>Welcome to CineMatch</h1>
-        <p>Type a movie you like, and we will recommend you other movies you might like!</p>
+        <p>Select a movie you like, and we will recommend you other movies you might like!</p>
     </div>
     """, unsafe_allow_html=True)
 
-movie_name = st.text_input(label='', placeholder="Enter a movie name")
+# movie_name = st.text_input(label='', placeholder="Enter a movie name")
+all_titles = movies_df['title'].tolist()
+all_titles_with_placeholder = [''] + all_titles
+movie_name = st.selectbox(label="", options=all_titles_with_placeholder)
 if movie_name != '':
-    all_titles = movies_df['title'].tolist()
     closest_match = process.extractOne(movie_name,all_titles)
     if closest_match[0]:
         recommended_movies = recommend_similar_movies(closest_match[0])
